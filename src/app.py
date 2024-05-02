@@ -70,9 +70,9 @@ def get_all_planets():
     return jsonify(all_planets), 200
 
 @app.route('/planets/<int:planet_id>', methods=['GET'])
-def get_planet():
+def get_planet(planet_id):
 
-    planet = Planets.query.get(id)
+    planet = Planets.query.get(planet_id)
    
     return jsonify(planet), 200
 
@@ -84,8 +84,8 @@ def get_all_vehicles():
     return jsonify(all_vehicles), 200
 
 @app.route('/vehicles/<int:vehicles_id>', methods=['GET'])
-def get_vehicle():
-    vehicle = Vehicles.query.get(id)
+def get_vehicle(vehicle_id):
+    vehicle = Vehicles.query.get(vehicle_id)
     
     
     return jsonify(vehicle), 200
@@ -109,28 +109,17 @@ def get_favorite():
 
 @app.route('/favorites/planet/<int:planet_id>', methods=['POST'])
 def add_favorite_planet(planet_id):
-    # Get the current user from Flask global context
-    current_user = g.user
     
-    
-    if current_user is None:
-        return jsonify({"error": "User not authenticated"}), 401
-
-    # Get the user ID
-    user_id = current_user.id
-
     # Check if the planet exists
     planet = Planets.query.get(planet_id)
     if planet is None:
         return jsonify({"error": "Planet not found"}), 404
 
     # Check if the favorite already exists for this user and planet
-    existing_favorite = Favorites.query.filter_by(user_id=user_id, planet_id=planet_id).first()
-    if existing_favorite:
-        return jsonify({"error": "Planet already favorited"}), 400
+   
 
     # Create a new favorite entry
-    favorite = Favorites(user_id=user_id, planet_id=planet_id)
+    favorite = Favorites( planet_id=planet_id)
     db.session.add(favorite)
     db.session.commit()
 
@@ -154,12 +143,12 @@ def add_favorite_people(people_id):
         return jsonify({"error": "People not found"}), 404
 
     # Check if the favorite already exists for this user and planet
-    existing_favorite = Favorites.query.filter_by(user_id=user.id, people_id=people_id).first()
+    existing_favorite = Favorites.query.filter_by(user_id=user_id, people_id=people_id).first()
     if existing_favorite:
         return jsonify({"error": "People already favorited"}), 400
 
     # Create a new favorite entry
-    favorite = Favorites(user_id=user.id, people_id=people.id)
+    favorite = Favorites(user_id=user_id, people_id=people_id)
     db.session.add(favorite)
     db.session.commit()
 

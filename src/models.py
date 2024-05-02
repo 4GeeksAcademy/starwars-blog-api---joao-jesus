@@ -7,10 +7,12 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False)
-    people = db.relationship('People', lazy=True)
-    planets = db.relationship('Planets', lazy=True)
-    vehicles = db.relationship('Vehicles', lazy=True)
-    favorites = db.relationship('Favorites', lazy=True)
+    peoples = db.relationship('People', backref='user', lazy=True)
+    planets = db.relationship('Planets', backref='user', lazy=True)
+    vehicles = db.relationship('Vehicles', backref='user', lazy=True)
+
+
+
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -29,8 +31,8 @@ class People(db.Model):
     gender = db.Column(db.String(250))
     eyecolor = db.Column(db.String(250))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'), nullable=False)
-    owner = db.relationship('User', backref=db.backref('owned_people', lazy=True))
+    
+   
    
 
     def __repr__(self):
@@ -53,8 +55,8 @@ class Planets(db.Model):
     diameter = db.Column(db.Float)
     gravity = db.Column(db.Float)
     population = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('user_id'), nullable=False)
-    people = db.relationship('People', backref='planet', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
 
     def __repr__(self):
         return '<Planets %r>' % self.name
